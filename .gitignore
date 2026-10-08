@@ -1,0 +1,24 @@
+# Segredos
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+env/
+
+# Excel / sistema
+~$*.xlsx
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Driver do Edge (baixado sozinho pelo robo.py)
+drivers/
+
+# Notas locais do Claude Code (não fazem parte da entrega)
+CLAUDE.md

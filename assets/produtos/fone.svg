@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Fone de ouvido">
+  <ellipse cx="200" cy="340" rx="120" ry="16" fill="#F1DCC5"/>
+  <path d="M95 230 C 95 120, 305 120, 305 230" stroke="#3B2414" stroke-width="26" fill="none" stroke-linecap="round"/>
+  <path d="M95 230 C 95 120, 305 120, 305 230" stroke="#C2560E" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <rect x="62" y="210" width="78" height="112" rx="34" fill="#3B2414"/>
+  <rect x="260" y="210" width="78" height="112" rx="34" fill="#3B2414"/>
+  <rect x="80" y="226" width="44" height="80" rx="22" fill="#E08A3C"/>
+  <rect x="276" y="226" width="44" height="80" rx="22" fill="#E08A3C"/>
+  <circle cx="102" cy="250" r="7" fill="#FFE6CC"/>
+  <circle cx="298" cy="250" r="7" fill="#FFE6CC"/>
+</svg>

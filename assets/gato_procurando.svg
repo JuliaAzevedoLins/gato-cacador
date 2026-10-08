@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Gato procurando com uma lupa">
+  <rect width="400" height="400" rx="40" fill="#FFF3E4"/>
+  <circle cx="200" cy="215" r="150" fill="#FBE0C2"/>
+  <!-- rabo -->
+  <path d="M290 320 C 350 310, 360 250, 330 225" stroke="#E08A3C" stroke-width="22" fill="none" stroke-linecap="round"/>
+  <!-- corpo -->
+  <ellipse cx="200" cy="300" rx="95" ry="62" fill="#E08A3C"/>
+  <ellipse cx="200" cy="312" rx="52" ry="36" fill="#FFE6CC"/>
+  <!-- cabeça -->
+  <path d="M120 170 L128 92 L178 132 Z" fill="#E08A3C"/>
+  <path d="M280 170 L272 92 L222 132 Z" fill="#E08A3C"/>
+  <path d="M134 156 L139 112 L166 136 Z" fill="#F7B7A3"/>
+  <path d="M266 156 L261 112 L234 136 Z" fill="#F7B7A3"/>
+  <ellipse cx="200" cy="190" rx="92" ry="78" fill="#E08A3C"/>
+  <!-- listras -->
+  <path d="M200 116 v26 M178 120 l6 22 M222 120 l-6 22" stroke="#C2560E" stroke-width="7" stroke-linecap="round"/>
+  <!-- olhos -->
+  <ellipse cx="165" cy="190" rx="15" ry="18" fill="#3B2414"/>
+  <circle cx="170" cy="184" r="5" fill="#fff"/>
+  <!-- focinho e boca -->
+  <path d="M192 214 h16 l-8 9 z" fill="#B23A2A"/>
+  <path d="M200 223 q-10 12 -20 4 M200 223 q10 12 20 4" stroke="#3B2414" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M140 214 h-40 M142 224 l-38 8 M260 214 h40 M258 224 l38 8" stroke="#3B2414" stroke-width="3" stroke-linecap="round"/>
+  <!-- lupa -->
+  <line x1="268" y1="236" x2="318" y2="290" stroke="#7A4A2A" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="236" cy="194" r="46" fill="#DFF3FF" fill-opacity=".75" stroke="#7A4A2A" stroke-width="12"/>
+  <ellipse cx="236" cy="190" rx="22" ry="26" fill="#3B2414"/>
+  <circle cx="244" cy="180" r="8" fill="#fff"/>
+  <path d="M212 170 q10 -12 24 -10" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".8"/>
+  <!-- patinha -->
+  <ellipse cx="282" cy="262" rx="20" ry="16" fill="#F2A65E"/>
+</svg>

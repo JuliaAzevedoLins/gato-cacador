@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Leitor de livros digitais">
+  <ellipse cx="200" cy="352" rx="100" ry="14" fill="#F1DCC5"/>
+  <rect x="115" y="45" width="170" height="295" rx="18" fill="#2F7D6D"/>
+  <rect x="130" y="65" width="140" height="235" rx="6" fill="#F4F1EA"/>
+  <g stroke="#9C8F80" stroke-width="6" stroke-linecap="round">
+    <path d="M148 95 h104 M148 117 h104 M148 139 h80 M148 171 h104 M148 193 h104 M148 215 h92 M148 247 h104 M148 269 h60"/>
+  </g>
+  <rect x="180" y="312" width="40" height="8" rx="4" fill="#1F5A4E"/>
+</svg>

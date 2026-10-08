@@ -1,0 +1,19 @@
+# Interface
+streamlit>=1.40
+plotly>=5.24
+
+# Automação web (Selenium 4 traz o Selenium Manager; se o Windows bloquear,
+# o robo.py baixa o driver do Edge sozinho via requests)
+selenium>=4.25
+beautifulsoup4>=4.12
+
+# API REST do Telegram
+requests>=2.32
+python-dotenv>=1.0
+
+# Planilhas Excel
+# pandas/pyarrow fixados em versões testadas no Windows 11: as mais novas
+# (pandas 3.x / pyarrow 25) foram barradas pelo Smart App Control na máquina de teste
+pandas==2.2.3
+pyarrow==18.1.0
+openpyxl>=3.1

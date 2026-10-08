@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Caixa de produto">
+  <ellipse cx="200" cy="335" rx="120" ry="16" fill="#F1DCC5"/>
+  <path d="M90 140 l110 -50 l110 50 l-110 50 z" fill="#F2B872"/>
+  <path d="M90 140 v130 l110 50 v-130 z" fill="#E08A3C"/>
+  <path d="M310 140 v130 l-110 50 v-130 z" fill="#C2560E"/>
+  <path d="M145 115 l110 50 v40 l-22 -10 v-40 l-110 -50 z" fill="#FFE6CC" opacity=".9"/>
+  <!-- patinha carimbada -->
+  <g fill="#7A4A2A" opacity=".8">
+    <ellipse cx="255" cy="250" rx="20" ry="16"/>
+    <circle cx="236" cy="224" r="7"/><circle cx="252" cy="216" r="7"/><circle cx="268" cy="219" r="7"/><circle cx="280" cy="232" r="7"/>
+  </g>
+</svg>
