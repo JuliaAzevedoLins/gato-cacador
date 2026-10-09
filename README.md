@@ -5,7 +5,7 @@
 Uma automação **RPA em Python** que vigia preços de produtos em lojas online e mia no seu Telegram quando o preço cai.
 Você monta a lista de desejos, define quanto quer pagar, e o gato faz o resto: abre o navegador, visita cada loja, captura o preço, guarda o histórico e dá o bote quando a presa (o preço baixo) aparece.
 
-![Busca de Presas: as 10 ofertas mais baratas de "fone JBL", com a melhor em destaque](docs/busca_real.png)
+![Busca de Presas: as 10 ofertas mais baratas de "fone jbl" em 5 lojas, com a melhor em destaque](docs/busca_real.png)
 
 ---
 
@@ -230,6 +230,12 @@ Na barra lateral, a etiqueta **"conectado: os alertas chegam no celular"** confi
 | **Caçada** | botão **"Soltar o gato!"**, opção de mostrar ou esconder o navegador (headless), log ao vivo e cartões com o resumo (visitados, presas, erros, alertas) |
 | **Histórico** | gráfico Plotly da variação de preço com a **linha da meta destacada** e patinhas 🐾 onde a meta foi batida; tabela com filtro por produto e download do Excel |
 | **Alertas** | token e chat_id lidos do `.env`, botões **Achar chat_id**, **Salvar** e **Miau de teste**, e a lista dos alertas já disparados |
+
+| Minha lista (com o interruptor 🔔 em cada produto) | Caçada (Modo Demo) |
+|---|---|
+| ![Aba Minha lista com três produtos, preço atual, meta e o interruptor de alerta](docs/lista.png) | ![Aba Caçada com o log ao vivo do gato e o resumo da caçada](docs/cacada.png) |
+| **Histórico** (linha tracejada = meta, 🐾 = meta batida) | **Alertas** (configuração do Telegram) |
+| ![Aba Histórico com o gráfico de preço do Headset Razer e a linha da meta](docs/historico.png) | ![Aba Alertas com token, chat_id, botões e alertas já disparados](docs/alertas.png) |
 
 **Visual:** estilo "papel e nanquim", com fundo creme, contorno escuro e sombras carimbadas, para combinar com o traço dos gatinhos que espiam por cima das caixas. As cores e o CSS ficam em [`ui/estilo.py`](ui/estilo.py) e [`.streamlit/config.toml`](.streamlit/config.toml).
 
