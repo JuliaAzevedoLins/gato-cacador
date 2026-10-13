@@ -66,12 +66,23 @@ class Presa:
 STOPWORDS = {"de", "da", "do", "das", "dos", "para", "pra", "com", "sem", "e", "o", "a",
              "os", "as", "em", "no", "na", "um", "uma", "kit", "novo", "original"}
 
-# Acessórios que costumam "pegar carona" na busca (buscar "fone JBL" e vir
-# "Almofada para JBL Tune"). Se uma dessas palavras aparece no COMEÇO do título
-# e o usuário não pediu por ela, o resultado é descartado.
+# Itens que costumam "pegar carona" na busca (buscar "playstation 5" e vir
+# "Suporte Vertical PlayStation 5" ou "Jogo Spider-Man PlayStation 5"). Se uma
+# dessas palavras aparece ANTES do produto buscado e o usuário não pediu por
+# ela, o resultado é descartado.
 ACESSORIOS = {"capa", "capinha", "case", "pelicula", "almofada", "almofadas", "espuma",
               "espumas", "protetor", "suporte", "adesivo", "skin", "estojo", "bolsa",
-              "cabo", "adaptador", "controle", "refil", "peca", "pecas"}
+              "cabo", "adaptador", "controle", "controles", "refil", "peca", "pecas",
+              "jogo", "jogos", "game", "games", "midia", "base", "stand", "dock",
+              "carregador", "headset", "volante", "cartao", "gift", "mochila", "cooler",
+              "ventilador", "trava", "tampa", "faceplate", "grip"}
+
+# Palavras que indicam "feito PARA o produto", e não o produto em si
+# ("Fone para PlayStation 5", "Capa compatível com iPhone 15", "p/ PS5").
+CONECTORES = {"para", "pra", "p", "compativel", "compatible", "for"}
+
+# Separadores comuns em títulos de jogos/acessórios: "Spider-Man 2 - PlayStation 5"
+SEPARADORES = re.compile(r"\s[-–—|]\s|\s*\|\s*|:\s|,\s")
 
 
 def normalizar(texto: str) -> str:
@@ -133,12 +144,47 @@ def relevancia(termo: str, titulo: str) -> float:
     return round(0.85 * cobertura + 0.15 * similaridade, 3)
 
 
+def _inicio_do_produto(chaves: list[str], palavras_titulo: list[str]) -> int | None:
+    """
+    Posição (índice da palavra) onde o produto buscado começa no título.
+    Usa de preferência as palavras sem número: em "EA FC 25 ... PlayStation 5",
+    o "5" bateria cedo demais dentro do "25".
+    """
+    texto = [p for p in chaves if not any(c.isdigit() for c in p)] or chaves
+    posicoes = [i for i, p in enumerate(palavras_titulo)
+                if any(_palavra_presente(c, p, [p]) for c in texto)]
+    return min(posicoes) if posicoes else None
+
+
+def e_derivado(termo: str, titulo: str) -> bool:
+    """
+    O resultado é um ACESSÓRIO ou JOGO do produto, e não o produto em si?
+    Olha o que vem ANTES do produto buscado no título:
+      - um acessório que o usuário não pediu ("Suporte Vertical PlayStation 5");
+      - um conector "para/compatível" ("Fone Gamer para PlayStation 5");
+      - um separador com nome na frente ("Marvel's Spider-Man 2 - PlayStation 5"),
+        padrão típico de jogos, em que o produto buscado é só a plataforma.
+    """
+    chaves = palavras_chave(termo)
+    palavras_titulo = normalizar(titulo).split()
+    inicio = _inicio_do_produto(chaves, palavras_titulo)
+    if not inicio:  # produto no começo do título (ou não localizado): é ele mesmo
+        return False
+    antes = set(palavras_titulo[:inicio]) - set(chaves)
+    if antes & (ACESSORIOS | CONECTORES):
+        return True
+    partes = SEPARADORES.split(titulo, maxsplit=1)
+    palavras_antes_do_separador = len(normalizar(partes[0]).split())
+    return len(partes) > 1 and inicio >= 2 and palavras_antes_do_separador <= inicio
+
+
 def e_relevante(termo: str, titulo: str) -> bool:
     """
     Regra de corte:
       - termos curtos (até 2 palavras-chave): TODAS precisam aparecer;
       - termos longos: pelo menos 2/3 das palavras-chave;
-      - e o título não pode começar com um acessório que o usuário não pediu.
+      - e não pode ser acessório/jogo do produto (ver e_derivado), a não ser
+        que o usuário tenha pedido por ele ("suporte playstation 5").
     """
     chaves = palavras_chave(termo)
     titulo_norm = normalizar(titulo)
@@ -151,9 +197,7 @@ def e_relevante(termo: str, titulo: str) -> bool:
     modelos = [p for p in chaves if any(c.isdigit() for c in p)]
     if not all(_palavra_presente(m, titulo_norm, palavras_titulo) for m in modelos):
         return False
-    inicio_titulo = set(palavras_titulo[:3])
-    acessorio = (inicio_titulo & ACESSORIOS) - set(chaves)
-    return not acessorio
+    return not e_derivado(termo, titulo)
 
 
 # ---------------------------------------------------------------------------

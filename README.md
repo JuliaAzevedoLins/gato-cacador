@@ -56,7 +56,7 @@ Com as 9 lojas, uma busca leva em torno de 1 minuto. Com uma categoria, fica mai
   - as palavras-chave do termo precisam aparecer no título (todas, em termos de até 2 palavras; 2/3 delas em termos mais longos);
   - plural vale ("fone" → "fones") e erros de digitação em palavras longas são tolerados pelo `difflib`;
   - **números de modelo são obrigatórios** ("520" não traz "510");
-  - acessórios que pegam carona ("Almofada para JBL...", "Capa para...") são descartados se você não pediu por eles.
+  - **o produto buscado precisa ser o assunto do título**: acessórios e jogos que pegam carona são descartados se você não pediu por eles. O gato olha o que vem *antes* do produto no título: um acessório ("Suporte Vertical PlayStation 5"), um "para/compatível" ("Headset para PlayStation 5") ou um nome seguido de separador ("Marvel's Spider-Man 2 - PlayStation 5"). Buscar "suporte playstation 5" traz os suportes normalmente.
 - **Bloqueio ou captcha**: o gato **não tenta burlar**. Espera alguns segundos e tenta **mais uma vez** (bloqueios costumam ser passageiros). Se a loja continuar barrando, registra o "chega pra lá" no log e segue com as outras lojas.
 - **Mesmo preço na busca e na caçada**: a busca usa o preço à vista do cartão. Quando o JSON-LD da página do produto traz outro valor (ex.: Pichau, que publica o preço no cartão de crédito), a loja usa `"css_primeiro": True` e a caçada lê o mesmo preço que a busca mostrou.
 
