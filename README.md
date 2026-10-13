@@ -194,6 +194,10 @@ Não precisa baixar driver de navegador: o **Selenium Manager** cuida disso, e s
 
 Os alertas chegam por um **bot do Telegram**. O app precisa de duas informações:
 
+> ⚠️ **O repositório não traz nenhum token nem chat_id.** Eles são secretos: quem tem o token controla o bot. Por isso o arquivo `.env` com os dados reais não vai para o GitHub. Para testar os alertas, **crie o seu próprio bot** (leva uns 2 minutos, passo a passo abaixo) e coloque o token e o chat_id no arquivo **`.env`**, na raiz do projeto (copie o modelo `.env.example`), ou cole tudo pela aba **🔔 Alertas** do app, que grava o `.env` sozinha.
+>
+> Sem Telegram configurado, todo o resto (Busca de Presas, caçada, planilhas e Modo Demo) funciona normalmente. Só os alertas no celular ficam desligados.
+
 | Variável | O que é | Exemplo |
 |---|---|---|
 | `TELEGRAM_BOT_TOKEN` | a "senha" do seu bot, gerada pelo BotFather | `123456789:AAHk3...` |
@@ -266,6 +270,16 @@ Abra [`cacador/lojas.py`](cacador/lojas.py) e acrescente uma entrada:
 Lojas que publicam o preço em JSON-LD ou meta tags (a maioria) funcionam na caçada mesmo sem seletores. O bloco `"busca"` só é preciso para a loja aparecer na Busca de Presas. Para descobrir os seletores, abra a busca da loja no navegador, clique com o botão direito num produto e escolha **Inspecionar**.
 
 ## 🎭 Modo Demo
+
+### Por que existe um Modo Demo?
+
+O Modo Demo é um **modo demonstrativo**: ele mostra como o sistema funciona **sem precisar abrir as lojas uma por uma**. As lojas já vêm pré-definidas (Mercado Livre, Amazon e KaBuM!) e os resultados são simulados, mas passam pelo **mesmo fluxo e pela mesma interface** da versão real: log ao vivo, cards, ranking por preço, planilhas, histórico e alertas.
+
+Ele foi **muito usado durante o desenvolvimento para validar o sistema antes de rodar na prática**. Com ele dava para testar a interface, o ranking, as planilhas e os alertas do Telegram de forma rápida e repetível, sem depender das lojas nem esperar uma queda de preço de verdade.
+
+Foi **mantido na entrega como documentação do processo** usado no projeto. A automação real (Selenium nas lojas) continua sendo o padrão, e tudo o que vem do demo aparece marcado como simulado na tela e nos alertas.
+
+### Como usar
 
 Ligue o toggle **🎭 Modo Demo** na barra lateral e clique em **Soltar o Gato!**. O gato simula uma caçada completa **sem abrir o navegador**:
 
