@@ -19,7 +19,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 
 from . import busca, persona, planilhas
-from .lojas import LOJAS, identificar_loja
+from .lojas import LOJAS, TODAS, identificar_loja, lojas_com_busca
 from .robo import evento, processar_captura, resumo
 
 METODO_DEMO = "Demo 🎭"
@@ -248,7 +248,7 @@ def _categoria_demo(termo: str) -> dict:
     return CATEGORIA_GENERICA
 
 
-def simular_busca(termo: str) -> Iterator[dict]:
+def simular_busca(termo: str, categoria: str | None = None) -> Iterator[dict]:
     """
     Simula a Busca de Presas com resultados fictícios realistas.
     Os números são sorteados com uma semente derivada do termo: a mesma busca
@@ -257,24 +257,30 @@ def simular_busca(termo: str) -> Iterator[dict]:
     """
     termo = (termo or "").strip()
     rnd = random.Random(busca.normalizar(termo))
-    categoria = _categoria_demo(termo)
+    produto_demo = _categoria_demo(termo)  # tipo de produto fictício (foto e faixa de preço)
     nome_base = " ".join(p[:1].upper() + p[1:] for p in termo.split())  # respeita "JBL"
-    preco_min, preco_max = categoria["preco"]
+    preco_min, preco_max = produto_demo["preco"]
     preco_ref = rnd.uniform(preco_min, preco_max)
 
     yield evento("log", persona.fala("demo"), "aviso")
     _pausa(0.5, 1.0)
     yield evento("log", persona.fala("busca_inicio", termo=termo))
+    # Só as lojas do demo que pertencem à categoria escolhida
+    nomes_categoria = [cfg["nome"] for cfg in lojas_com_busca(categoria)]
+    lojas_demo = [loja for loja in LOJAS_DEMO if loja in nomes_categoria]
+    if categoria and categoria != TODAS:
+        yield evento("log", persona.fala("busca_categoria", categoria=categoria, n=len(nomes_categoria)),
+                     "info", detalhe=", ".join(nomes_categoria))
 
     todas: list = []
-    for loja in LOJAS_DEMO:
+    for loja in lojas_demo:
         url_busca = busca.montar_url(_config_busca(loja), termo)
         url_busca += "&" if "?" in url_busca else "?"
         _pausa(0.8, 1.5)
         yield evento("loja", persona.fala("loja_espreitando", loja=loja), "info", loja=loja)
         _pausa(1.0, 2.0)
         quantidade = rnd.randint(1, 5)
-        variacoes = rnd.sample(categoria["variacoes"], k=min(quantidade, len(categoria["variacoes"])))
+        variacoes = rnd.sample(produto_demo["variacoes"], k=min(quantidade, len(produto_demo["variacoes"])))
         presas = []
         for variacao in variacoes:
             titulo = f"{nome_base} {variacao}"
@@ -283,7 +289,7 @@ def simular_busca(termo: str) -> Iterator[dict]:
                 preco=round(preco_ref * rnd.uniform(0.78, 1.30) - rnd.choice([0, 0.01, 0.1]), 2),
                 loja=loja,
                 link=url_busca + f"presa-demo={len(todas) + len(presas) + 1}",
-                imagem="asset:" + categoria["imagem"],
+                imagem="asset:" + produto_demo["imagem"],
                 relevancia=busca.relevancia(termo, titulo),
             ))
         yield evento("log", persona.fala("loja_avistadas", loja=loja, n=len(presas)), "sucesso",
@@ -295,4 +301,4 @@ def simular_busca(termo: str) -> Iterator[dict]:
         todas.extend(presas)
 
     _pausa(0.5, 1.0)
-    yield from busca._eventos_finais(busca.consolidar(todas), LOJAS_DEMO, [])
+    yield from busca._eventos_finais(busca.consolidar(todas), lojas_demo, [])

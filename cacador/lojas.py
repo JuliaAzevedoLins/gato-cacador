@@ -25,13 +25,23 @@ O bloco "busca" de cada loja configura a BUSCA DE PRESAS (busca.py):
     "link":        CSS do link (None = o próprio cartão é o <a>)
     "imagem":      CSS da foto
     "patrocinado": CSS e/ou textos que denunciam anúncio pago (o gato pula)
+
+"categorias" diz em quais categorias da busca a loja entra (ex.: buscar um SSD
+em "Tecnologia" não passa pela Centauro). Lojas que vendem de tudo usam
+GERAL e entram em todas as categorias.
 """
 
 from urllib.parse import urlparse
 
+# Categorias da Busca de Presas ("Todas" = todas as lojas, sem filtro)
+TODAS = "Todas"
+CATEGORIAS = [TODAS, "Tecnologia", "Beleza", "Esporte", "Casa e escritório"]
+GERAL = ["geral"]  # loja de tudo: entra em qualquer categoria
+
 LOJAS: dict[str, dict] = {
     "mercadolivre.com.br": {
         "nome": "Mercado Livre",
+        "categorias": GERAL,
         "seletores": [
             # Preço principal da página do produto (o primeiro .andes-money-amount
             # dentro do bloco de preço atual; o riscado fica em <s>)
@@ -58,6 +68,7 @@ LOJAS: dict[str, dict] = {
     },
     "amazon.com.br": {
         "nome": "Amazon",
+        "categorias": GERAL,
         "seletores": [
             # Preço atual do bloco principal; o riscado ("De:") fica em .a-text-price
             "#corePrice_feature_div span.a-price:not(.a-text-price) span.a-offscreen",
@@ -80,6 +91,7 @@ LOJAS: dict[str, dict] = {
     },
     "kabum.com.br": {
         "nome": "KaBuM!",
+        "categorias": ["Tecnologia"],
         "seletores": [
             # Layout atual (2026): o preço é um web component <number-flow-react>
             # com o valor num JSON no atributo "data". O 1º da página é o preço à vista.
@@ -105,6 +117,7 @@ LOJAS: dict[str, dict] = {
     },
     "pichau.com.br": {
         "nome": "Pichau",
+        "categorias": ["Tecnologia"],
         "seletores": ["div[class*='price_vista']"],
         # O JSON-LD da Pichau traz o preço no cartão; a busca mostra o à vista (PIX)
         "css_primeiro": True,
@@ -124,6 +137,7 @@ LOJAS: dict[str, dict] = {
     },
     "terabyteshop.com.br": {
         "nome": "Terabyte",
+        "categorias": ["Tecnologia"],
         "seletores": ["#valVista", ".product-item__new-price span"],
         "busca": {
             "url": "https://www.terabyteshop.com.br/busca?str={termo}",
@@ -139,6 +153,7 @@ LOJAS: dict[str, dict] = {
     },
     "epocacosmeticos.com.br": {
         "nome": "Época Cosméticos",
+        "categorias": ["Beleza"],
         "seletores": ["[datatype='spotPrice']"],
         "busca": {
             "url": "https://www.epocacosmeticos.com.br/pesquisa?q={termo}",
@@ -155,6 +170,7 @@ LOJAS: dict[str, dict] = {
     },
     "kalunga.com.br": {
         "nome": "Kalunga",
+        "categorias": ["Tecnologia", "Casa e escritório"],
         "seletores": [],  # a página do produto traz o preço em JSON-LD
         "busca": {
             "url": "https://www.kalunga.com.br/busca/1?q={termo}",
@@ -170,6 +186,7 @@ LOJAS: dict[str, dict] = {
     },
     "fastshop.com.br": {
         "nome": "Fast Shop",
+        "categorias": ["Tecnologia", "Casa e escritório"],
         "seletores": [],
         "busca": {
             "url": "https://site.fastshop.com.br/s?q={termo}",
@@ -186,6 +203,7 @@ LOJAS: dict[str, dict] = {
     },
     "centauro.com.br": {
         "nome": "Centauro",
+        "categorias": ["Esporte"],
         "seletores": ["[data-testid='price-current']"],
         "busca": {
             "url": "https://www.centauro.com.br/busca/{termo}",
@@ -220,9 +238,16 @@ SELETORES_GENERICOS = [
 ]
 
 
-def lojas_com_busca() -> list[dict]:
-    """Lojas que têm o bloco "busca" configurado, na ordem do dicionário."""
-    return [cfg for cfg in LOJAS.values() if cfg.get("busca")]
+def lojas_com_busca(categoria: str | None = None) -> list[dict]:
+    """
+    Lojas que têm o bloco "busca" configurado, na ordem do dicionário.
+    Com uma categoria, só as lojas daquele tema e as lojas gerais.
+    """
+    lojas = [cfg for cfg in LOJAS.values() if cfg.get("busca")]
+    if not categoria or categoria == TODAS:
+        return lojas
+    return [cfg for cfg in lojas
+            if categoria in cfg.get("categorias", []) or cfg.get("categorias") == GERAL]
 
 
 def identificar_loja(url: str) -> tuple[str, dict]:

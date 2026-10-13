@@ -33,7 +33,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from . import persona
 from .extrator import converter_preco_br
-from .lojas import lojas_com_busca
+from .lojas import TODAS, lojas_com_busca
 from .robo import LojaBloqueouError, NavegadorGato, evento, pagina_bloqueada
 
 POR_LOJA = 5            # quantos resultados válidos coletar de cada loja
@@ -393,10 +393,17 @@ def _og_image(driver, link: str) -> str | None:
         return None
 
 
-def buscar_presas(termo: str, headless: bool = False) -> Iterator[dict]:
-    """Executa a busca real em cada loja, uma por vez, emitindo eventos para o log."""
+def buscar_presas(termo: str, headless: bool = False, categoria: str | None = None) -> Iterator[dict]:
+    """
+    Executa a busca real em cada loja, uma por vez, emitindo eventos para o log.
+    categoria (ex.: "Tecnologia") limita a busca às lojas daquele tema.
+    """
     termo = (termo or "").strip()
+    lojas = lojas_com_busca(categoria)
     yield evento("log", persona.fala("busca_inicio", termo=termo))
+    if categoria and categoria != TODAS:
+        yield evento("log", persona.fala("busca_categoria", categoria=categoria, n=len(lojas)), "info",
+                     detalhe=", ".join(cfg["nome"] for cfg in lojas))
     todas: list[Presa] = []
     lojas_ok, lojas_falha = [], []
 
@@ -406,7 +413,7 @@ def buscar_presas(termo: str, headless: bool = False) -> Iterator[dict]:
                 yield evento("log", f"O Chrome não quis brincar (bloqueado pelo Windows?). "
                              f"Vou de {navegador.nome}. 😼", "aviso", detalhe=navegador.falhas[0])
             driver = navegador.driver
-            for i, cfg_loja in enumerate(lojas_com_busca()):
+            for i, cfg_loja in enumerate(lojas):
                 loja = cfg_loja["nome"]
                 if i > 0:
                     time.sleep(random.uniform(1.0, 2.0))  # pausa educada entre as lojas

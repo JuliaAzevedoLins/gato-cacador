@@ -11,9 +11,9 @@ Você monta a lista de desejos, define quanto quer pagar, e o gato faz o resto: 
 
 ## 🔎 Busca de Presas (o destaque)
 
-Digite um produto (ex.: **"fone JBL Tune 520"**), aperte **Enter** ou clique em **Farejar presas 🐾**, e o gato:
+Digite um produto (ex.: **"fone JBL Tune 520"**), escolha a **categoria** (opcional), aperte **Enter** ou clique em **Farejar**, e o gato:
 
-1. abre o navegador com Selenium e pesquisa o termo na **URL de busca** de cada loja cadastrada (veja a lista abaixo), **uma loja por vez**, com uma pequena pausa entre elas;
+1. abre o navegador com Selenium e pesquisa o termo na **URL de busca** de cada loja da categoria escolhida (veja a lista abaixo), **uma loja por vez**, com uma pequena pausa entre elas;
 2. espera os cartões de resultado com `WebDriverWait` e coleta **até 5 resultados válidos por loja**: título, preço, loja, link e foto;
 3. **pula** anúncios patrocinados, itens sem preço e itens **irrelevantes**;
 4. junta tudo, **remove duplicados**, ordena do **menor para o maior preço** e mostra **no máximo as 10 presas mais baratas** (se achar só 5, mostra 5, sem espaços vazios);
@@ -26,20 +26,22 @@ Acima da grade fica um resumo com a quantidade de presas, o menor e o maior pre�
 
 Escolhi as lojas que fazem sentido para mim no momento, misturando lojas gerais e especializadas. Nada impede de adicionar outras (veja [Adicionando outra loja](#adicionando-outra-loja)).
 
-| Loja | Tipo |
-|---|---|
-| Mercado Livre | geral |
-| Amazon | geral |
-| KaBuM! | informática e eletrônicos |
-| Pichau | informática e eletrônicos |
-| Terabyte | informática e eletrônicos |
-| Kalunga | informática e papelaria |
-| Fast Shop | eletrônicos e eletrodomésticos |
-| Época Cosméticos | beleza |
-| Centauro | esporte |
+| Loja | Tipo | Categorias da busca |
+|---|---|---|
+| Mercado Livre | geral | todas |
+| Amazon | geral | todas |
+| KaBuM! | informática e eletrônicos | Tecnologia |
+| Pichau | informática e eletrônicos | Tecnologia |
+| Terabyte | informática e eletrônicos | Tecnologia |
+| Kalunga | informática e papelaria | Tecnologia, Casa e escritório |
+| Fast Shop | eletrônicos e eletrodomésticos | Tecnologia, Casa e escritório |
+| Época Cosméticos | beleza | Beleza |
+| Centauro | esporte | Esporte |
+
+**Categorias:** não faz sentido procurar um SSD na Centauro. Na busca dá para escolher **Todas**, **Tecnologia**, **Beleza**, **Esporte** ou **Casa e escritório**, e o gato só visita as lojas daquele tema (as lojas gerais entram em todas). Buscar em *Tecnologia* passa por 7 lojas em vez de 9, e em *Beleza* por só 3. As categorias de cada loja ficam no campo `"categorias"` em [`cacador/lojas.py`](cacador/lojas.py).
 
 Testadas e deixadas de fora porque bloqueiam o robô: Magazine Luiza, Beleza na Web, Netshoes e Shopee.
-Com 9 lojas, uma busca leva em torno de 1 minuto.
+Com as 9 lojas, uma busca leva em torno de 1 minuto. Com uma categoria, fica mais rápida.
 
 | Desktop (Modo Demo) | Celular |
 |---|---|
@@ -225,7 +227,7 @@ Na barra lateral, a etiqueta **"conectado: os alertas chegam no celular"** confi
 
 | Aba | O que tem |
 |---|---|
-| **Buscar** | campo de busca grande (Enter funciona), log ao vivo com falas do gato, resumo, grade com as 10 presas mais baratas e botão **+ Vigiar preço** |
+| **Buscar** | campo de busca grande (Enter funciona), seletor de **categoria**, log ao vivo com falas do gato, resumo, grade com as 10 presas mais baratas e botão **+ Vigiar preço** |
 | **Minha lista** | formulário para adicionar produtos e um cartão por produto (loja, meta, último preço e quanto falta), com o interruptor **🔔 Alertar quando cair** e os botões **Editar** e **Remover** (com confirmação). Tudo é validado antes de salvar, e renomear um produto renomeia também o histórico dele |
 | **Caçada** | botão **"Soltar o gato!"**, opção de mostrar ou esconder o navegador (headless), log ao vivo e cartões com o resumo (visitados, presas, erros, alertas) |
 | **Histórico** | gráfico Plotly da variação de preço com a **linha da meta destacada** e patinhas 🐾 onde a meta foi batida; tabela com filtro por produto e download do Excel |
@@ -246,6 +248,7 @@ Abra [`cacador/lojas.py`](cacador/lojas.py) e acrescente uma entrada:
 ```python
 "minhaloja.com.br": {
     "nome": "Minha Loja",
+    "categorias": ["Tecnologia"],                                 # ou GERAL, se vende de tudo
     "seletores": ["span.preco-final", "[data-testid='price']"],  # preço na página do produto
     "busca": {                                                    # opcional: entra na Busca de Presas
         "url": "https://www.minhaloja.com.br/busca?q={termo}",

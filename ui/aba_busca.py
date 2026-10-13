@@ -9,16 +9,16 @@ fim, exibe as presas mais baratas numa grade de cards (ui/cards.py).
 import streamlit as st
 
 from cacador import busca, demo, persona, planilhas
-from cacador.lojas import lojas_com_busca
+from cacador.lojas import CATEGORIAS, TODAS, lojas_com_busca
 from ui import cards, estilo
 from ui.log import linha_do_evento, render_log
 
 CARDS_POR_LINHA = 4
 
 
-def _executar_busca(termo: str, modo_demo: bool, mostrar_navegador: bool) -> None:
-    eventos = (demo.simular_busca(termo) if modo_demo
-               else busca.buscar_presas(termo, headless=not mostrar_navegador))
+def _executar_busca(termo: str, modo_demo: bool, mostrar_navegador: bool, categoria: str) -> None:
+    eventos = (demo.simular_busca(termo, categoria) if modo_demo
+               else busca.buscar_presas(termo, headless=not mostrar_navegador, categoria=categoria))
     linhas, resultado = [], None
 
     with st.status(persona.fala("busca_status"), expanded=True) as status:
@@ -39,7 +39,7 @@ def _executar_busca(termo: str, modo_demo: bool, mostrar_navegador: bool) -> Non
         status.update(label=rotulo, state="complete", expanded=False)
 
     st.session_state["busca"] = {
-        "termo": termo, "presas": presas, "linhas": linhas, "demo": modo_demo,
+        "termo": termo, "categoria": categoria, "presas": presas, "linhas": linhas, "demo": modo_demo,
         "lojas_falha": resultado["lojas_falha"] if resultado else [],
         "fala_melhor": persona.fala("melhor_preco"),
         "fala_vazio": persona.fala("nenhuma_presa"),
@@ -81,7 +81,7 @@ def render(modo_demo: bool) -> None:
     st.markdown(cards.CSS_BUSCA, unsafe_allow_html=True)
     nomes = [cfg["nome"] for cfg in lojas_com_busca()]
     st.markdown(estilo.titulo("Busca de Presas",
-                              f"Diga o que você quer e eu farejo em {len(nomes)} lojas. "
+                              f"Diga o que você quer e eu farejo em até {len(nomes)} lojas. "
                               "Trago as 10 ofertas mais baratas."), unsafe_allow_html=True)
 
     # st.form: apertar Enter no campo também dispara a busca.
@@ -93,18 +93,24 @@ def render(modo_demo: bool) -> None:
             termo = col_termo.text_input("O que vamos caçar hoje?", placeholder="ex.: fone JBL Tune 520",
                                          key="termo_busca")
             farejar = col_botao.form_submit_button("Farejar", type="primary", use_container_width=True)
+            # Categoria: limita a busca às lojas do tema (Mercado Livre e Amazon entram em todas)
+            categoria = st.segmented_control("Categoria", CATEGORIAS, default=TODAS, key="categoria_busca",
+                                             help="Ex.: um SSD em Tecnologia não passa pela Centauro. "
+                                                  "Mercado Livre e Amazon vendem de tudo e entram em todas.")
             mostrar_navegador = st.toggle("Mostrar o navegador enquanto procuro", value=True,
                                           disabled=modo_demo, key="navegador_busca",
                                           help="Algumas lojas (ex.: Mercado Livre) bloqueiam o modo invisível.")
             if modo_demo:
                 st.caption("Modo Demo: resultados fictícios, sem abrir o navegador.")
-        st.markdown(f'<p class="busca-dica">Lojas: {", ".join(nomes)}.</p>', unsafe_allow_html=True)
+        st.markdown(f'<p class="busca-dica">Lojas: {", ".join(nomes)}. '
+                    "Escolha uma categoria para eu pular as lojas que não têm a ver.</p>",
+                    unsafe_allow_html=True)
 
     if farejar:
         if len(termo.strip()) < 2:
             st.warning("Me dá uma pista melhor, humano. Digite o nome de um produto. 😾")
         else:
-            _executar_busca(termo.strip(), modo_demo, mostrar_navegador)
+            _executar_busca(termo.strip(), modo_demo, mostrar_navegador, categoria or TODAS)
 
     ultima = st.session_state.get("busca")
     if not ultima:
@@ -114,6 +120,8 @@ def render(modo_demo: bool) -> None:
 
     if not farejar:  # depois de um rerun (ex.: clicou em "Vigiar"), o log fica guardado aqui
         titulo = f"Diário da última busca: \"{ultima['termo']}\"" + (" (demo)" if ultima["demo"] else "")
+        if ultima.get("categoria", TODAS) != TODAS:
+            titulo += f" · {ultima['categoria']}"
         with st.expander(titulo):
             st.markdown(render_log(ultima["linhas"]), unsafe_allow_html=True)
 

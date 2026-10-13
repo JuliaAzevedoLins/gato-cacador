@@ -94,6 +94,10 @@ FALAS: dict[str, list[str]] = {
         "Espiando por trás das vitrines...",
         "Contando as presas na tigela...",
     ],
+    "busca_categoria": [
+        "Categoria {categoria}: vou só nas {n} lojas que fazem sentido. Gato esperto não perde tempo. 😼",
+        "{categoria}, é? Então são {n} lojas. O resto eu nem cheiro.",
+    ],
     "loja_espreitando": [
         "Espreitando o {loja}...",
         "Entrando de fininho no {loja}... 👀",
