@@ -7,6 +7,22 @@ Você monta a lista de desejos, define quanto quer pagar, e o gato faz o resto: 
 
 ![Busca de Presas: as 10 ofertas mais baratas de "fone jbl" em 5 lojas, com a melhor em destaque](docs/busca_real.png)
 
+## 🎬 Vídeo de demonstração
+
+[![Assista ao vídeo de demonstração do Gato Caçador de Ofertas no YouTube](https://img.youtube.com/vi/xpnMM-gWbnw/hqdefault.jpg)](https://youtu.be/xpnMM-gWbnw)
+
+▶️ **Assista no YouTube:** https://youtu.be/xpnMM-gWbnw
+
+## 👥 Integrantes (turma 4ESPY)
+
+| Nome | RM |
+|---|---|
+| Felipe Cortez | 99750 |
+| Julia Lins | 98690 |
+| Luis Barreto | 99210 |
+| Victor Aranda | 99667 |
+| Guilherme Akio | 98582 |
+
 ---
 
 ## 🔎 Busca de Presas (o destaque)
